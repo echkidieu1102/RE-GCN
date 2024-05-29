@@ -19,7 +19,8 @@ import numpy as np
 import torch
 from tqdm import tqdm
 import random
-sys.path.append("..")
+# sys.path.append("..")
+sys.path.append("") # DEBUG
 from rgcn import utils
 from rgcn.utils import build_sub_graph
 from src.rrgcn import RecurrentRGCN
@@ -119,7 +120,7 @@ def run_experiment(args, n_hidden=None, n_layers=None, dropout=None, n_bases=Non
 
     # load graph data
     print("loading graph data")
-    data = utils.load_data(args.dataset)
+    data = utils.load_data(args.dataset) # DEBUG
     train_list = utils.split_by_time(data.train)
     valid_list = utils.split_by_time(data.valid)
     test_list = utils.split_by_time(data.test)
@@ -135,14 +136,16 @@ def run_experiment(args, n_hidden=None, n_layers=None, dropout=None, n_bases=Non
     model_name = "{}-{}-{}-ly{}-dilate{}-his{}-weight:{}-discount:{}-angle:{}-dp{}|{}|{}|{}-gpu{}"\
         .format(args.dataset, args.encoder, args.decoder, args.n_layers, args.dilate_len, args.train_history_len, args.weight, args.discount, args.angle,
                 args.dropout, args.input_dropout, args.hidden_dropout, args.feat_dropout, args.gpu)
-    model_state_file = '../models/' + model_name
+    # model_state_file = '../models/' + model_name
+    model_state_file = './models/' + model_name # DEBUG
     print("Sanity Check: stat name : {}".format(model_state_file))
     print("Sanity Check: Is cuda available ? {}".format(torch.cuda.is_available()))
 
     use_cuda = args.gpu >= 0 and torch.cuda.is_available()
 
     if args.add_static_graph:
-        static_triples = np.array(_read_triplets_as_list("../data/" + args.dataset + "/e-w-graph.txt", {}, {}, load_time=False))
+        # static_triples = np.array(_read_triplets_as_list("../data/" + args.dataset + "/e-w-graph.txt", {}, {}, load_time=False))
+        static_triples = np.array(_read_triplets_as_list("./data/" + args.dataset + "/e-w-graph.txt", {}, {}, load_time=False)) # DEBUG
         num_static_rels = len(np.unique(static_triples[:, 1]))
         num_words = len(np.unique(static_triples[:, 2]))
         static_triples[:, 2] = static_triples[:, 2] + num_nodes 
